@@ -1,0 +1,40 @@
+#base=el7-base
+#name=lago CentOS 7 nfs server
+#osinfo=centos7.2
+#distro=el7
+#arch=x86_64
+#expand=/dev/sda3
+#root-partition=/dev/sda3
+root-password password:123456
+install qemu-guest-agent,lvm2,nfs-utils
+
+# fix for bz#1302678
+edit /usr/lib/systemd/system/rhel-autorelabel.service:\
+    $_ = "" if /StandardInput=tty/
+
+# enable services
+run-command systemctl start rpcbind.service
+run-command systemctl start nfs-server.service
+run-command systemctl start nfs-lock.service
+run-command systemctl start nfs-idmap.service
+run-command systemctl enable rpcbind.service
+run-command systemctl enable nfs-server.service
+
+# firewall rules
+write /etc/firewalld/services/nfs.xml:\
+<service>\
+  <short>nfs</short>\
+  <description>\
+    Nfs srever related service ports\
+  </description>\
+  <port port="111" protocol="tcp" />\
+  <port port="875" protocol="tcp" />\
+  <port port="2049" protocol="tcp" />\
+  <port port="20048" protocol="tcp" />\
+  <port port="46666" protocol="tcp" />\
+  <port port="42955" protocol="tcp" />\
+  <port port="54302" protocol="tcp" />\
+</service>\
+
+edit /etc/firewalld/zones/public.xml:\
+    $_ = '<service name="nfs"/>'.$_ if /<\/zone>/

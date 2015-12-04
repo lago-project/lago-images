@@ -1,0 +1,8 @@
+#base=libguestfs:cirros-0.3.1
+#name=lago CirrOS 0.3.1
+#osinfo=cirros0.3.1
+#distro=cirros
+#arch=x86_64
+#expand=/dev/sda1
+#root-partition=/dev/sda1
+root-password password:123456

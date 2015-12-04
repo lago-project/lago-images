@@ -1,0 +1,56 @@
+#base=el7-base
+#name=lago CentOS 7
+#osinfo=centos7.2
+#distro=el7
+#arch=x86_64
+#expand=/dev/sda3
+#root-partition=/dev/sda3
+root-password password:123456
+install \
+    qemu-guest-agent,lvm2,targetcli,iscsi-initiator-utils,\
+    device-mapper-multipath
+
+# fix for bz#1302678
+edit /usr/lib/systemd/system/rhel-autorelabel.service:\
+    $_ = "" if /StandardInput=tty/d
+
+# firewall rules
+write /etc/firewalld/services/iscsi.xml:\
+<service>\
+  <short>iscsi</short>\
+  <description>\
+    ISCSI server related ports \
+  </description>\
+  <port port="860" protocol="tcp" />\
+  <port port="3260" protocol="tcp" />\
+</service>
+
+edit /etc/firewalld/zones/public.xml:\
+    $_ = '<service name="iscsi"/>' + $_ if /<\/zone>/
+
+# iscsi conf
+write /etc/multipath.conf:\
+defaults {\
+  polling_interval    5\
+  getuid_callout      "/sbin/scsi_id --whitelisted --replace-whitespace --device=/dev/%n"\
+  no_path_retry       fail\
+  user_friendly_names no\
+  flush_on_last_del   yes\
+  fast_io_fail_tmo    5\
+  dev_loss_tmo        30\
+  max_fds             4096\
+}\
+\
+devices {\
+  device {\
+    vendor         "HITACHI"\
+    product        "DF.*"\
+    getuid_callout "/sbin/scsi_id --whitelisted --replace-whitespace --device=/dev/%n"\
+  }\
+  device {\
+    vendor        "COMPELNT"\
+    product       "Compellent Vol"\
+    no_path_retry fail\
+  }\
+}\
+

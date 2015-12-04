@@ -1,0 +1,14 @@
+#base=libguestfs:fedora-22
+#name=lago Fedora® 22
+#osinfo=fedora22
+#distro=fc22
+#arch=x86_64
+#expand=/dev/sda3
+#root-partition=/dev/sda3
+root-password password:123456
+update
+install qemu-guest-agent
+
+# fix for bz#1049656
+edit /usr/lib/systemd/system/fedora-autorelabel.service:\
+    $_ = "" if /StandardInput=tty/d

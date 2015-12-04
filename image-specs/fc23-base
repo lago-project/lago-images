@@ -1,0 +1,14 @@
+#base=libguestfs:fedora-23
+#name=lago Fedora® 23
+#osinfo=fedora23
+#distro=fc23
+#arch=x86_64
+#expand=/dev/sda3
+#root-partition=/dev/sda3
+root-password password:123456
+update
+install qemu-guest-agent
+
+# fix for bz#1049656
+edit /usr/lib/systemd/system/fedora-autorelabel.service:\
+    $_ = "" if /StandardInput=tty/d

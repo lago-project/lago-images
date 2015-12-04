@@ -1,0 +1,14 @@
+#base=libguestfs:centos-7.2
+#name=lago CentOS 7
+#osinfo=centos7.2
+#distro=el7
+#arch=x86_64
+#expand=/dev/sda3
+#root-partition=/dev/sda3
+root-password password:123456
+update
+install qemu-guest-agent
+
+# fix for bz#1302678
+edit /usr/lib/systemd/system/rhel-autorelabel.service:\
+    $_ = "" if /StandardInput=tty/d

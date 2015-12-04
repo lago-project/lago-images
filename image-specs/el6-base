@@ -1,0 +1,10 @@
+#base=libguestfs:centos-6
+#name=lago CentOS 6
+#osinfo=centos6.6
+#distro=el6
+#arch=x86_64
+#expand=/dev/sda3
+#root-partition=/dev/sda3
+root-password password:123456
+update
+install qemu-guest-agent
