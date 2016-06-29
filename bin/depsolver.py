@@ -37,7 +37,7 @@ def get_batches(nodes):
         for deps in name_to_deps.itervalues():
             deps.difference_update(ready)
 
-        batches.append(dict(name_to_instance[name] for name in ready))
+        batches.append(name_to_instance[name] for name in ready)
 
     return batches
 
