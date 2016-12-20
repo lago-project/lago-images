@@ -1,0 +1,15 @@
+#base=libguestfs:fedora-24
+#version=v1
+#name=fc24-base
+#osinfo=fedora24
+#distro=fc24
+#arch=x86_64
+#expand=/dev/sda3
+#root-partition=/dev/sda3
+root-password password:123456
+update
+install qemu-guest-agent
+
+# fix for bz#1049656
+edit /usr/lib/systemd/system/fedora-autorelabel.service:\
+    $_ = "" if /StandardInput=tty/d

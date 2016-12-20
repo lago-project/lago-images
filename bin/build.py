@@ -381,6 +381,7 @@ def prepare_disk_template(disk_image):
     image_cleanup_command = [
         'virt-sysprep',
         '--format=qcow2',
+        '--selinux-relabel',
         '--add=' + disk_image,
     ]
     call(image_cleanup_command)
