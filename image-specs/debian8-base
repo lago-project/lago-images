@@ -1,0 +1,17 @@
+#base=libguestfs:debian-8
+#name=debian8
+#osinfo=debian8
+#distro=debian
+#version=v1
+#arch=x86_64
+#expand=/dev/sda1
+#root-partition=/dev/sda1
+root-password password:123456
+update
+install qemu-guest-agent
+edit /boot/grub/grub.cfg:s/set timeout=5/set timeout=0/g
+edit /boot/grub/grub.cfg:s/^(\s+linux\s+\/boot.*)$/$1 net.ifnames=0 biosdevname=0/g
+edit /etc/default/grub:s/^(GRUB_CMDLINE_LINUX=)(.*)$/$1"net.ifnames=0 biosdevname=0"/g
+edit /etc/default/grub:s/^(GRUB_TIMEOUT=)(.*)$/$10/g
+firstboot-command dpkg-reconfigure openssh-server
+firstboot-command systemctl restart sshd
