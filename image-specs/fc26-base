@@ -1,0 +1,11 @@
+#base=libguestfs:fedora-26
+#version=v1
+#name=fc26-base
+#osinfo=fedora26
+#distro=fc26
+#arch=x86_64
+#expand=/dev/sda3
+#root-partition=/dev/sda3
+root-password password:123456
+update
+install qemu-guest-agent
