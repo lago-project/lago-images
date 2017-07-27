@@ -1,0 +1,4 @@
+lago
+requests
+future
+filemagic
