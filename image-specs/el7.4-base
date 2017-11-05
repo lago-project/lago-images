@@ -1,0 +1,14 @@
+#base=libguestfs:centos-7.4
+#name=el7.4-base
+#osinfo=centos7.4
+#distro=el7
+#version=v1
+#arch=x86_64
+#expand=/dev/sda2
+#lvexpand=/dev/cl/root
+#root-partition=/dev/cl/root
+root-password password:123456
+update
+install qemu-guest-agent
+uninstall iwl*
+edit /boot/grub2/grub.cfg:s/set timeout=5/set timeout=0/g
