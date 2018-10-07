@@ -1,0 +1,16 @@
+#base=libguestfs:centos-7.5
+#name=el7.5-base
+#osinfo=centos7.5
+#distro=el7
+#version=v1
+#arch=x86_64
+#expand=/dev/sda4
+#root-partition=/dev/sda4
+root-password password:123456
+update
+install qemu-guest-agent
+uninstall iwl*
+uninstall alsa-*
+uninstall *firmware*
+edit /boot/grub2/grub.cfg:s/set timeout=5/set timeout=0/g
+selinux-relabel
