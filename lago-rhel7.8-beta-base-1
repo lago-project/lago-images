@@ -1,0 +1,26 @@
+#base=simple:http://download-node-02.eng.bos.redhat.com/rhel-7/rel-eng/latest-RHEL-7.8/compose/Server/x86_64/images/rhel-guest-image-7.8-34.x86_64.qcow2
+#version=195
+#name=lago-rhel7.8-beta-base-1
+#osinfo=rhel7.8
+#distro=el7
+#arch=x86_64
+#expand=/dev/sda1
+#root-partition=/dev/sda1
+#size=0
+root-password password:123456
+link /dev/null:/etc/systemd/system/cloud-init.service
+link /dev/null:/etc/systemd/system/cloud-init-local.service
+link /dev/null:/etc/systemd/system/cloud-config.service
+link /dev/null:/etc/systemd/system/cloud-final.service
+upload repos/rhel.7.8.sat.repo:/etc/yum.repos.d
+update
+install qemu-guest-agent
+install cockpit
+install firewalld
+uninstall iwl*
+uninstall alsa-*
+uninstall *firmware*
+edit /boot/grub2/grub.cfg:s/set timeout=5/set timeout=0/g
+delete /etc/yum.repos.d/rhel.7.8.sat.repo
+selinux-relabel
+

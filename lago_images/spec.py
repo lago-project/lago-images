@@ -84,6 +84,7 @@ class VirtBuilderSpec(Spec):
             'osinfo',
             'arch',
             'expand',
+            'size',
         }
     )
 

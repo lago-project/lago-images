@@ -1,0 +1,20 @@
+#base=libguestfs:centos-8.0
+#name=el8.1-base-beta-1
+#osinfo=centos8.0
+#distro=el8
+#version=v1
+#arch=x86_64
+#expand=/dev/sda4
+#root-partition=/dev/sda4
+#size=+2G
+root-password password:123456
+copy-in cr-repo.repo:/etc/yum.repos.d/
+update
+install qemu-guest-agent
+uninstall iwl*
+uninstall alsa-*
+uninstall *firmware*
+edit /boot/grub2/grub.cfg:s/set timeout=5/set timeout=0/g
+edit /etc/default/grub:s/crashkernel=auto/net.ifnames=0 crashkernel=auto/g
+run-command grub2-mkconfig -o /boot/grub2/grub.cfg
+selinux-relabel

@@ -119,6 +119,36 @@ class LibguestFSImage(Image):
             commands_file=self.spec.commands_file
         )
 
+        if self.spec.size != 0:
+            build_utils.resize_disk_image(
+                dst_image=self.dst_path,
+                new_size=self.spec.size,
+            )
+
+            build_utils.copy_image_with_cp(
+                src_image=self.dst_path,
+                dst_image=self.dst_path+"_new",
+            )
+
+            build_utils.resize_image_partition(
+                dst_image=self.dst_path,
+                new_dst_image=self.dst_path+"_new",
+                partition=self.spec.expand
+            )
+
+            build_utils.remove_disk_image(
+                dst_image=self.dst_path,
+            )
+
+            build_utils.copy_image_with_cp(
+                src_image=self.dst_path+"_new",
+                dst_image=self.dst_path,
+            )
+
+            build_utils.remove_disk_image(
+                dst_image=self.dst_path+"_new",
+            )
+
         build_utils.virt_sysprep(
             dst_image=self.dst_path
         )
@@ -185,6 +215,36 @@ class SimpleImage(Image):
             commands_file=self.spec.commands_file
         )
 
+        if self.spec.size == 0:
+            build_utils.resize_disk_image(
+                dst_image=self.dst_path,
+                new_size=self.spec.size,
+            )
+
+            build_utils.copy_image_with_cp(
+                src_image=self.dst_path,
+                dst_image=self.dst_path+"_new",
+            )
+
+            build_utils.resize_image_partition(
+                dst_image=self.dst_path,
+                new_dst_image=self.dst_path+"_new",
+                partition=self.spec.expand
+            )
+
+            build_utils.remove_disk_image(
+                dst_image=self.dst_path,
+            )
+
+            build_utils.copy_image_with_cp(
+                src_image=self.dst_path+"_new",
+                dst_image=self.dst_path,
+            )
+
+            build_utils.remove_disk_image(
+                dst_image=self.dst_path+"_new",
+            )
+
         build_utils.virt_sysprep(
             dst_image=base_image_path
         )
@@ -242,7 +302,6 @@ image_type_to_cls = {
     'layer': LayeredImage,
     'simple': SimpleImage
 }
-
 
 class LagoImagesBuildException(build_utils.LagoImagesException):
     pass

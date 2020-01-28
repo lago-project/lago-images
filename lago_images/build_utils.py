@@ -100,11 +100,120 @@ def virt_builder(base_image, dst_image, commands_file, fail_on_error=True):
         base_image,
     ]
 
+    print(cmd)
     with LogTask('Running virt-builder on {}'.format(base_image)):
         return run_command_with_validation(
             cmd,
             fail_on_error,
             msg='Failed to run virt-builder'
+        )
+
+
+def resize_disk_image(dst_image, new_size, fail_on_error=True):
+    """
+    Create a copy of the disk
+
+    Args:
+        dst_img = old disk image
+        new_size = how much to add forexample "+2G"
+    Returns:
+        None
+
+    """
+
+    cmd = [
+        'qemu-img',
+        'resize',
+        dst_image,
+        new_size
+    ]
+    print(cmd)
+    with LogTask('Resize disk image {}'.format(dst_image)):
+        return run_command_with_validation(
+            cmd,
+            fail_on_error,
+            msg='Failed Resize disk image {}'.format(dst_image)
+        )
+
+
+def copy_image_with_cp(src_image, dst_image, fail_on_error=True):
+    """
+    Create a copy of the disk
+
+    Args:
+        src_image = old disk image
+        dst_img = new disk image
+
+    Returns:
+        None
+
+    """
+
+    cmd = [
+        'cp',
+        '--sparse=always',
+        src_image,
+        dst_image,
+    ]
+    print(cmd)
+    with LogTask('Copy disk image {}'.format(dst_image)):
+        return run_command_with_validation(
+            cmd,
+            fail_on_error,
+            msg='Copy disk image {}'.format(dst_image)
+        )
+
+
+def resize_image_partition(dst_image, new_dst_image, partition="/dev/sda4", fail_on_error=True):
+    """
+    Extend the partition
+
+    Args:
+        dst_img = old disk image
+        new_dst_image = new disk image
+        partition = partition to extend
+
+    Returns:
+        None
+
+    """
+    cmd = [
+        'virt-resize',
+        '--expand',
+        partition,
+        dst_image,
+        new_dst_image,
+    ]
+    print(cmd)
+    with LogTask('Resize Disk partition {}'.format(partition)):
+        return run_command_with_validation(
+            cmd,
+            fail_on_error,
+            msg='Failed to Resize Disk partition {}'.format(partition)
+        )
+
+def remove_disk_image(dst_image, fail_on_error=True):
+    """
+    Remove disk image
+
+    Args:
+        dst_img = disk image
+
+    Returns:
+        None
+
+    """
+    cmd = [
+        'rm',
+        '-f',
+        dst_image,
+    ]
+    print(cmd)
+    with LogTask('Remove disk image {}'.format(dst_image)):
+        return run_command_with_validation(
+            cmd,
+            fail_on_error,
+            msg='Failed to remove disk image {}'.format(dst_image)
         )
 
 
@@ -119,6 +228,7 @@ def create_layered_image(dst_image, base_image, fail_on_error=True):
     Returns:
         None
     """
+
     cmd = [
         'qemu-img',
         'create',
